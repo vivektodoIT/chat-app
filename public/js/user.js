@@ -1,3 +1,5 @@
+// vivek 
+
 require('dotenv').config();
 
 // 1️⃣ Prompt once for a valid email, then sanitize into a Firebase-safe key
