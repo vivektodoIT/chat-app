@@ -1,0 +1,227 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login / Signup</title>
+</head>
+<body>
+  <h2>Login or Signup</h2>
+  <input type="email" id="email" placeholder="Email"><br>
+  <input type="password" id="password" placeholder="Password"><br>
+  <select id="role">
+    <option value="user">User</option>
+    <option value="admin">Admin</option>
+  </select><br><br>
+  <button onclick="signup()">Signup</button>
+  <button onclick="login()">Login</button>
+
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js"></script>
+
+  <script>
+    // ✅ Replace these with your actual Firebase config
+    const firebaseConfig = {
+      apiKey: AIzaSyBSCzfKZ2s3jE7CSyBlJiXwEkvQSOsjY54,
+      authDomain: chat-application-n.firebaseapp.com,
+      databaseURL: https://chat-application-n-default-rtdb.asia-southeast1.firebasedatabase.app/,
+      projectId: chat-application-n,
+      storageBucket: chat-application-n.firebasestorage.app,
+      messagingSenderId: 755206797335,
+      appId: 1:755206797335:web:20c9cb1b8ed7e0bb7b4452
+    };
+
+    // ✅ Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.database();
+
+    function signup() {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const role = document.getElementById('role').value;
+
+      auth.createUserWithEmailAndPassword(email, password)
+        .then(userCredential => {
+          const uid = userCredential.user.uid;
+          return db.ref('users/' + uid).set({ role: role });
+        })
+        .then(() => {
+          alert('Signup successful! Now log in.');
+        })
+        .catch(error => alert(error.message));
+    }
+
+    function login() {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      auth.signInWithEmailAndPassword(email, password)
+        .then(userCredential => {
+          const uid = userCredential.user.uid;
+          return db.ref('users/' + uid + '/role').once('value');
+        })
+        .then(snapshot => {
+          const role = snapshot.val();
+          if (role === 'admin') {
+            window.location.href = '/admin';
+          } else {
+            window.location.href = '/';
+          }
+        })
+        .catch(error => alert(error.message));
+    }
+  </script>
+</body>
+</html> -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login / Signup</title>
+  <!-- <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f5f7fa;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      background: white;
+      padding: 40px 30px;
+      border-radius: 10px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+      width: 320px;
+      text-align: center;
+    }
+
+    .container h2 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      box-sizing: border-box;
+      font-size: 14px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      border: none;
+      border-radius: 8px;
+      background: #4a90e2;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #357bd8;
+    }
+
+    .message {
+      margin-top: 15px;
+      font-size: 14px;
+      color: green;
+    }
+
+    .error {
+      color: red;
+    }
+  </style> -->
+  <link rel="stylesheet" href="/css/style.css">
+
+</head>
+<body>
+  <div class="container">
+    <h2>Login or Signup</h2>
+    <input type="email" id="email" placeholder="Email">
+    <input type="password" id="password" placeholder="Password">
+    <button onclick="signup()">Signup</button>
+    <button onclick="login()">Login</button>
+    <div class="message" id="message"></div>
+  </div>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+
+  <script>
+    // ✅ Replace with your actual Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyBSCzfKZ2s3jE7CSyBlJiXwEkvQSOsjY54",
+      authDomain: "chat-application-n.firebaseapp.com",
+      databaseURL: "https://chat-application-n-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "chat-application-n",
+      storageBucket: "chat-application-n.appspot.com",
+      messagingSenderId: "755206797335",
+      appId: "1:755206797335:web:20c9cb1b8ed7e0bb7b4452"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.database();
+
+    // 🛡️ Admin credentials
+    const ADMIN_EMAIL = "admin@gmail.com";
+
+    function signup() {
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value.trim();
+      const messageEl = document.getElementById('message');
+
+      auth.createUserWithEmailAndPassword(email, password)
+        .then(userCredential => {
+          const uid = userCredential.user.uid;
+          const role = (email === ADMIN_EMAIL) ? 'admin' : 'user';
+          return db.ref('users/' + uid).set({ role });
+        })
+        .then(() => {
+          messageEl.textContent = 'Signup successful! You can now log in.';
+          messageEl.className = 'message';
+        })
+        .catch(error => {
+          messageEl.textContent = error.message;
+          messageEl.className = 'message error';
+        });
+    }
+
+    function login() {
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value.trim();
+      const messageEl = document.getElementById('message');
+
+      auth.signInWithEmailAndPassword(email, password)
+        .then(userCredential => {
+          const uid = userCredential.user.uid;
+          return db.ref('users/' + uid + '/role').once('value');
+        })
+        .then(snapshot => {
+          const role = snapshot.val();
+          if (role === 'admin') {
+            window.location.href = '/admin';
+          } else {
+            window.location.href = '/user';
+          }
+        })
+        .catch(error => {
+          messageEl.textContent = error.message;
+          messageEl.className = 'message error';
+        });
+    }
+  </script>
+</body>
+</html>

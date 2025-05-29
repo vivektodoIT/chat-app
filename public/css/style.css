@@ -1,0 +1,357 @@
+/* login.html */
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #f5f7fa;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.container {
+    background: white;
+    padding: 40px 30px;
+    border-radius: 10px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    width: 320px;
+    text-align: center;
+}
+
+.container h2 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 8px;
+    background: #4a90e2;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+button:hover {
+    background: #357bd8;
+}
+
+.message {
+    margin-top: 15px;
+    font-size: 14px;
+    color: green;
+}
+
+.error {
+    color: red;
+}
+
+
+                                                    /* admin.html */
+/* Reset + global settings */
+/*─────────────────────────────────────────────────────────────────────────────
+   RESET & GLOBAL
+─────────────────────────────────────────────────────────────────────────────*/
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100vh;
+  font-family: Arial, sans-serif;
+  /* allow our wrapper to handle scrolling where needed */
+}
+
+/*─────────────────────────────────────────────────────────────────────────────
+   MAIN LAYOUT
+─────────────────────────────────────────────────────────────────────────────*/
+.wrapper {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+}
+
+/* Left Sidebar */
+#usersList {
+  width: 250px;
+  background: #fff;
+  border-right: 1px solid #ccc;
+  padding: 10px;
+  overflow-y: auto;
+}
+
+#usersList h3 {
+  font-size: 18px;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.user-btn {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 5px;
+  background: #9c9191;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  font-weight: bold;
+  text-align: left;
+  cursor: pointer;
+}
+.user-btn:hover {
+  background: #bbb;
+}
+
+/* Right Chat Panel */
+.chat-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  overflow: hidden; /* keep messages scrollable, not the whole page */
+}
+
+/* Fixed Header */
+.chat-header {
+  flex-shrink: 0;
+  background-color: #0d6efd;
+  color: white;
+  padding: 15px;
+  text-align: center;
+  font-weight: bold;
+}
+
+/* Scrollable Messages Area */
+#messages {
+  flex: 1;
+  padding: 10px;
+  background: #fafafa;
+  overflow-y: auto;
+}
+
+/*─────────────────────────────────────────────────────────────────────────────
+   INPUT AREA (always visible at bottom)
+─────────────────────────────────────────────────────────────────────────────*/
+.input-area {
+  flex-shrink: 0;
+  display: flex;
+  flex-wrap: wrap;        /* wrap if too narrow */
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border-top: 1px solid #ddd;
+  background: #fff;
+}
+
+/* File picker never shrinks below its intrinsic width */
+#imageInput {
+  flex-shrink: 0;
+}
+
+/* Text input grows to fill remaining space, but has a minimum width */
+#messageInput {
+  flex: 1;
+  min-width: 120px;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+/* Send button never shrinks and sits to the right */
+#sendBtn {
+  flex-shrink: 0;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: #4CAF50;
+  color: white;
+  cursor: pointer;
+}
+#sendBtn:hover {
+  background-color: #45a049;
+}
+
+/*─────────────────────────────────────────────────────────────────────────────
+   CHAT BUBBLES
+─────────────────────────────────────────────────────────────────────────────*/
+.message {
+  margin: 10px 0;
+  max-width: 75%;
+  padding: 10px;
+  border-radius: 10px;
+  word-wrap: break-word;
+  clear: both;
+}
+
+.admin-message {
+  background-color: #d1e7dd;
+  text-align: right;
+  margin-left: auto;
+}
+
+.user-message {
+  background-color: #f8d7da;
+  text-align: left;
+  margin-right: auto;
+}
+
+img {
+  max-width: 200px;
+  display: block;
+  margin-top: 5px;
+  border-radius: 8px;
+}
+
+
+
+
+
+                                                    /* user.html */
+
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background-color: #f5f5f5;
+}
+
+#chat-container {
+    max-width: 600px;
+    margin: 30px auto;
+    padding: 15px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    height: 90vh;
+}
+
+h2 {
+    text-align: center;
+    color: #333;
+}
+
+#messages {
+    flex: 1;
+    list-style: none;
+    padding: 10px;
+    overflow-y: auto;
+    margin: 0;
+}
+
+.message {
+    margin: 10px 0;
+    display: flex;
+    width: 100%;
+}
+
+.user-message {
+    justify-content: flex-end;
+}
+
+.admin-message {
+    justify-content: flex-start;
+}
+
+.bubble {
+    max-width: 70%;
+    background-color: #d4f3c3;
+    padding: 10px 15px;
+    border-radius: 12px;
+    word-wrap: break-word;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.admin-message .bubble {
+    background-color: #f1f1f1;
+    color: #333;
+}
+
+.user-message .bubble {
+    background-color: #d4f3c3;
+    color: #333;
+    text-align: right;
+}
+
+.bubble img {
+    max-width: 100%;
+    border-radius: 8px;
+    margin-top: 5px;
+}
+
+.bubble p {
+    margin: 0;
+    font-size: 16px;
+    word-break: break-word;
+}
+
+.timestamp {
+    font-size: 0.75em;
+    color: gray;
+    margin-top: 5px;
+    text-align: right;
+}
+
+#input-area {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    padding-top: 10px;
+}
+
+#message {
+    flex: 1;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+#imageInput,
+#cancelImage,
+button {
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+}
+
+button {
+    background-color: #4CAF50;
+    color: white;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+#cancelImage {
+    background-color: #f44336;
+    color: white;
+    cursor: pointer;
+}
+
+#cancelImage:hover {
+    background-color: #d32f2f;
+}

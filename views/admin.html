@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Chat</title>
+  <link rel="stylesheet" href="/css/style.css?v=9999">
+</head>
+<body>
+    <div class="wrapper"> <!-- ✅ NEW wrapper -->
+  <!-- Left Sidebar -->
+  <div id="usersList">
+    <h3>Users</h3>
+    <div id="userButtons"></div>
+  </div>
+
+  <!-- Right Chat Panel -->
+  <div class="chat-container">
+    <div class="chat-header">Admin Chat</div>
+    <div id="messages"></div>
+
+    <!-- Input area fixed at bottom -->
+    <div class="input-area">
+      <input id="imageInput" type="file" accept="image/*" />
+      <input id="messageInput" type="text" placeholder="Type a message..." />
+      <button id="sendBtn">Send</button>
+    </div>
+  </div>
+
+  <!-- Firebase and Socket -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/admin.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Chat</title>
+  <link rel="stylesheet" href="/css/style.css?v=9999">
+</head>
+<body>
+    <div class="wrapper"> // ✅ NEW wrapper
+
+        //Left Sidebar
+  <div id="usersList">
+    <h3>Users</h3>
+    <div id="userButtons"></div>
+  </div>
+
+  //Right Chat Panel
+  <div class="chat-container">
+    <div class="chat-header">Admin Chat</div>
+    <div id="messages"></div>
+
+    //Input area fixed at bottom
+    <div class="input-area">
+      <input id="imageInput" type="file" accept="image/*" />
+      <input id="messageInput" type="text" placeholder="Type a message..." />
+      <button id="sendBtn">Send</button>
+    </div>
+  </div>
+
+
+  //Firebase and Socket
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/admin.js"></script>
+</body>
+</html> -->
+
