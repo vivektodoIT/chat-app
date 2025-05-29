@@ -1,177 +1,344 @@
-// vivek 
+// public/js/user.js
 
-require('dotenv').config();
+// ————————————————————————————————
+// 0️⃣ Sanity check: this should immediately fire in your console
+console.log("👋 user.js loaded; forcing email prompt");
+localStorage.removeItem('email');  // only for testing; remove this line once prompt works
+// ————————————————————————————————
 
-// 1️⃣ Prompt once for a valid email, then sanitize into a Firebase-safe key
+// 1️⃣ Prompt once for a valid email, then store it
 let rawEmail = localStorage.getItem('email');
 if (!rawEmail) {
-  rawEmail = prompt("Welcome! Please enter your email:");
-  if (!rawEmail || !rawEmail.includes('@')) {
-    alert("A valid email is required to chat.");
+  rawEmail = prompt("👋 Welcome! Please enter your email to start chatting:");
+  if (!rawEmail || !rawEmail.includes("@")) {
+    alert("❌ A valid email is required.");
     throw new Error("Invalid email");
   }
-  localStorage.setItem('email', rawEmail);
+  localStorage.setItem("email", rawEmail);
 }
 
-// sanitize: replace “.” → “,” so it works as a Firebase path
+// sanitize email → Firebase key (dots → commas)
 function emailKey(e) {
-  return encodeURIComponent(e.trim().toLowerCase())
-           .replace(/\./g, ',');
+  return e.trim().toLowerCase().replace(/\./g, ",");
 }
-function emailFromKey(k) {
-  return decodeURIComponent(k).replace(/,/g, '.');
-}
-
 const userEmail = rawEmail;
 const userKey   = emailKey(userEmail);
-console.log("🔑 Email:", userEmail, "→ userKey:", userKey);
 
-// update URL so you can see it, e.g. /user?uid=foo%40bar,com
-window.history.replaceState(
-  null, '', `/user?uid=${encodeURIComponent(userKey)}`
-);
+console.log("🔑 Chatting as:", userEmail, "→ key:", userKey);
 
+// update URL so you see it reflected
+window.history.replaceState(null, "", `/user?uid=${encodeURIComponent(userKey)}`);
 
-// ─────────────────────────────────────────────────────────────────────────────
-// 2️⃣ Firebase init
+// 2️⃣ Firebase init (hard-coded, no process.env here)
 const firebaseConfig = {
-  apiKey: process.env.FIREBASE_API_KEY,
-  authDomain: process.env.FIREBASE_AUTH_DOMAIN,
-  databaseURL: process.env.FIREBASE_DATABASE_URL,
-  projectId: process.env.FIREBASE_PROJECT_ID,
-  storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.FIREBASE_APP_ID,
-  measurementId: process.env.FIREBASE_MEASUREMENT_ID
+  apiKey: "AIzaSyBSCzfKZ2s3jE7CSyBlJiXwEkvQSOsjY54",
+  authDomain: "chat-application-n.firebaseapp.com",
+  databaseURL: "https://chat-application-n-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "chat-application-n",
+  storageBucket: "chat-application-n.appspot.com",
+  messagingSenderId: "755206797335",
+  appId: "1:755206797335:web:20c9cb1b8ed7e0bb7b4452",
+  measurementId: "G-DLL61DHR1Q"
 };
-
 firebase.initializeApp(firebaseConfig);
 
-// ─────────────────────────────────────────────────────────────────────────────
-// 3️⃣ Socket.IO connect & join your room
+// 3️⃣ Socket.IO — connect & join your room
 const socket = io();
-socket.on('connect', () => {
-  console.log('✅ Socket connected as', socket.id);
-  socket.emit('join', userKey);
+socket.on("connect", () => {
+  console.log("✅ socket.io connected as", socket.id);
+  socket.emit("join", userKey);
 });
 
-// ─────────────────────────────────────────────────────────────────────────────
 // 4️⃣ State for image attachments
-let selectedImageBase64 = '';
+let selectedImageBase64 = "";
 
-
-// ─────────────────────────────────────────────────────────────────────────────
-// 5️⃣ Fetch & render existing messages ONCE on load
-document.addEventListener('DOMContentLoaded', async () => {
+// 5️⃣ On load, fetch and render existing messages
+document.addEventListener("DOMContentLoaded", async () => {
   try {
     const res  = await fetch(`/messages/${encodeURIComponent(userKey)}`);
     const msgs = await res.json();
+    console.log("Messages loaded:", msgs);
     msgs.forEach(addMessage);
     scrollToBottom();
   } catch (err) {
-    console.error("Fetch messages failed:", err);
+    console.error("❌ Fetch messages failed:", err);
   }
 });
 
-// ─────────────────────────────────────────────────────────────────────────────
 // 6️⃣ Render a single message bubble
 function addMessage(msg) {
-  const li     = document.createElement('li');
-  const isUser = msg.sender === 'user';
-  li.className = `message ${isUser ? 'user-message' : 'admin-message'}`;
-
+  const li     = document.createElement("li");
+  const isUser = msg.sender === "user";
+  li.className = `message ${isUser ? "user-message" : "admin-message"}`;
   li.innerHTML = `
     <div class="bubble">
-      ${msg.text ? `<p>${msg.text}</p>` : ''}
-      ${msg.imageBase64
-         ? `<img src="${msg.imageBase64}" />`
-         : ''}
+      ${msg.text ? `<p>${msg.text}</p>` : ""}
+      ${msg.imageBase64 ? `<img src="${msg.imageBase64}" />` : ""}
       <div class="timestamp">
-        <strong>${isUser ? 'You' : 'Support'}</strong>
+        <strong>${isUser ? "You" : "Support"}</strong>
         <span>${formatTime(msg.timestamp)}</span>
       </div>
     </div>
   `;
-
-  document.getElementById('messages').appendChild(li);
+  document.getElementById("messages").appendChild(li);
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
 // 7️⃣ Scroll helper
 function scrollToBottom() {
-  const c = document.getElementById('messages');
+  const c = document.getElementById("messages");
   c.scrollTop = c.scrollHeight;
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
 // 8️⃣ Format timestamps
 function formatTime(ts) {
   return new Date(ts).toLocaleTimeString([], {
-    hour:   '2-digit',
-    minute: '2-digit'
+    hour:   "2-digit",
+    minute: "2-digit"
   });
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
 // 9️⃣ Image file selection
-document.getElementById('imageInput').addEventListener('change', () => {
-  const f = document.getElementById('imageInput').files[0];
-  if (!f || !f.type.startsWith('image/')) return;
+document.getElementById("imageInput").addEventListener("change", () => {
+  const f = document.getElementById("imageInput").files[0];
+  if (!f || !f.type.startsWith("image/")) return;
   const reader = new FileReader();
   reader.onloadend = () => {
     selectedImageBase64 = reader.result;
-    document.getElementById('cancelImage').style.display = 'inline-block';
+    document.getElementById("cancelImage").style.display = "inline-block";
   };
   reader.readAsDataURL(f);
 });
 
-// 🔟 Cancel selected image
-document.getElementById('cancelImage').addEventListener('click', () => {
-  selectedImageBase64 = '';
-  document.getElementById('imageInput').value = '';
-  document.getElementById('cancelImage').style.display = 'none';
+// 🔟 Cancel image
+document.getElementById("cancelImage").addEventListener("click", () => {
+  selectedImageBase64 = "";
+  document.getElementById("imageInput").value = "";
+  document.getElementById("cancelImage").style.display = "none";
 });
 
-// ─────────────────────────────────────────────────────────────────────────────
-// 1️⃣1️⃣ Send a new message
+// 1️⃣1️⃣ Send message
 async function sendMessage() {
-  const text = document.getElementById('message').value.trim();
+  const text = document.getElementById("message").value.trim();
   if (!text && !selectedImageBase64) {
-    alert('Cannot send empty message.');
+    alert("Cannot send empty message.");
     return;
   }
 
   const payload = {
-    userKey     : userKey,
-    sender     : 'user',
+    userKey,
+    sender:      "user",
     text,
     imageBase64: selectedImageBase64,
-    email      : userEmail      // raw email included for admin
+    email:       userEmail
   };
 
   try {
-    const resp = await fetch('/send', {
-      method : 'POST',
-      headers: {'Content-Type':'application/json'},
-      body   : JSON.stringify(payload)
+    const resp = await fetch("/send", {
+      method:  "POST",
+      headers: {"Content-Type":"application/json"},
+      body:    JSON.stringify(payload)
     });
     if (resp.ok) {
-      document.getElementById('message').value = '';
-      selectedImageBase64 = '';
-      document.getElementById('cancelImage').style.display = 'none';
+      document.getElementById("message").value = "";
+      selectedImageBase64 = "";
+      document.getElementById("cancelImage").style.display = "none";
     }
   } catch (err) {
-    console.error("Send failed:", err);
+    console.error("❌ Send failed:", err);
   }
 }
-document.getElementById('sendBtn').addEventListener('click', sendMessage);
+document.getElementById("sendBtn").addEventListener("click", sendMessage);
 
-// ─────────────────────────────────────────────────────────────────────────────
 // 1️⃣2️⃣ Real-time incoming
-socket.on('chat message', msg => {
+socket.on("chat message", msg => {
   addMessage(msg);
   scrollToBottom();
 });
+
+
+
+
+// console.log("👋 user.js v2 loaded — clearing old 'email' to force prompt");
+// localStorage.removeItem('email');  // remove any stale email so you always get the prompt
+
+
+
+// require('dotenv').config();
+
+// // 1️⃣ Prompt once for a valid email, then sanitize into a Firebase-safe key
+// let rawEmail = localStorage.getItem('email');
+// if (!rawEmail) {
+//   rawEmail = prompt("Welcome! Please enter your email:");
+//   if (!rawEmail || !rawEmail.includes('@')) {
+//     alert("A valid email is required to chat.");
+//     throw new Error("Invalid email");
+//   }
+//   localStorage.setItem('email', rawEmail);
+// }
+
+// // sanitize: replace “.” → “,” so it works as a Firebase path
+// function emailKey(e) {
+//   return encodeURIComponent(e.trim().toLowerCase())
+//            .replace(/\./g, ',');
+// }
+// function emailFromKey(k) {
+//   return decodeURIComponent(k).replace(/,/g, '.');
+// }
+
+// const userEmail = rawEmail;
+// const userKey   = emailKey(userEmail);
+// console.log("🔑 Email:", userEmail, "→ userKey:", userKey);
+
+// // update URL so you can see it, e.g. /user?uid=foo%40bar,com
+// window.history.replaceState(
+//   null, '', `/user?uid=${encodeURIComponent(userKey)}`
+// );
+
+
+// // ─────────────────────────────────────────────────────────────────────────────
+// // 2️⃣ Firebase init
+// const firebaseConfig = {
+//   apiKey: process.env.FIREBASE_API_KEY,
+//   authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+//   databaseURL: process.env.FIREBASE_DATABASE_URL,
+//   projectId: process.env.FIREBASE_PROJECT_ID,
+//   storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+//   messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
+//   appId: process.env.FIREBASE_APP_ID,
+//   measurementId: process.env.FIREBASE_MEASUREMENT_ID
+// };
+
+// firebase.initializeApp(firebaseConfig);
+
+// // ─────────────────────────────────────────────────────────────────────────────
+// // 3️⃣ Socket.IO connect & join your room
+// const socket = io();
+// socket.on('connect', () => {
+//   console.log('✅ Socket connected as', socket.id);
+//   socket.emit('join', userKey);
+// });
+
+// // ─────────────────────────────────────────────────────────────────────────────
+// // 4️⃣ State for image attachments
+// let selectedImageBase64 = '';
+
+
+// // ─────────────────────────────────────────────────────────────────────────────
+// // 5️⃣ Fetch & render existing messages ONCE on load
+// document.addEventListener('DOMContentLoaded', async () => {
+//   try {
+//     const res  = await fetch(`/messages/${encodeURIComponent(userKey)}`);
+//     const msgs = await res.json();
+//     msgs.forEach(addMessage);
+//     scrollToBottom();
+//   } catch (err) {
+//     console.error("Fetch messages failed:", err);
+//   }
+// });
+
+// // ─────────────────────────────────────────────────────────────────────────────
+// // 6️⃣ Render a single message bubble
+// function addMessage(msg) {
+//   const li     = document.createElement('li');
+//   const isUser = msg.sender === 'user';
+//   li.className = `message ${isUser ? 'user-message' : 'admin-message'}`;
+
+//   li.innerHTML = `
+//     <div class="bubble">
+//       ${msg.text ? `<p>${msg.text}</p>` : ''}
+//       ${msg.imageBase64
+//          ? `<img src="${msg.imageBase64}" />`
+//          : ''}
+//       <div class="timestamp">
+//         <strong>${isUser ? 'You' : 'Support'}</strong>
+//         <span>${formatTime(msg.timestamp)}</span>
+//       </div>
+//     </div>
+//   `;
+
+//   document.getElementById('messages').appendChild(li);
+// }
+
+// // ─────────────────────────────────────────────────────────────────────────────
+// // 7️⃣ Scroll helper
+// function scrollToBottom() {
+//   const c = document.getElementById('messages');
+//   c.scrollTop = c.scrollHeight;
+// }
+
+// // ─────────────────────────────────────────────────────────────────────────────
+// // 8️⃣ Format timestamps
+// function formatTime(ts) {
+//   return new Date(ts).toLocaleTimeString([], {
+//     hour:   '2-digit',
+//     minute: '2-digit'
+//   });
+// }
+
+// // ─────────────────────────────────────────────────────────────────────────────
+// // 9️⃣ Image file selection
+// document.getElementById('imageInput').addEventListener('change', () => {
+//   const f = document.getElementById('imageInput').files[0];
+//   if (!f || !f.type.startsWith('image/')) return;
+//   const reader = new FileReader();
+//   reader.onloadend = () => {
+//     selectedImageBase64 = reader.result;
+//     document.getElementById('cancelImage').style.display = 'inline-block';
+//   };
+//   reader.readAsDataURL(f);
+// });
+
+// // 🔟 Cancel selected image
+// document.getElementById('cancelImage').addEventListener('click', () => {
+//   selectedImageBase64 = '';
+//   document.getElementById('imageInput').value = '';
+//   document.getElementById('cancelImage').style.display = 'none';
+// });
+
+// // ─────────────────────────────────────────────────────────────────────────────
+// // 1️⃣1️⃣ Send a new message
+// async function sendMessage() {
+//   const text = document.getElementById('message').value.trim();
+//   if (!text && !selectedImageBase64) {
+//     alert('Cannot send empty message.');
+//     return;
+//   }
+
+//   const payload = {
+//     userKey     : userKey,
+//     sender     : 'user',
+//     text,
+//     imageBase64: selectedImageBase64,
+//     email      : userEmail      // raw email included for admin
+//   };
+
+//   try {
+//     const resp = await fetch('/send', {
+//       method : 'POST',
+//       headers: {'Content-Type':'application/json'},
+//       body   : JSON.stringify(payload)
+//     });
+//     if (resp.ok) {
+//       document.getElementById('message').value = '';
+//       selectedImageBase64 = '';
+//       document.getElementById('cancelImage').style.display = 'none';
+//     }
+//   } catch (err) {
+//     console.error("Send failed:", err);
+//   }
+// }
+// document.getElementById('sendBtn').addEventListener('click', sendMessage);
+
+// // ─────────────────────────────────────────────────────────────────────────────
+// // 1️⃣2️⃣ Real-time incoming
+// socket.on('chat message', msg => {
+//   addMessage(msg);
+//   scrollToBottom();
+// });
+
+
+
+
 
 
 
