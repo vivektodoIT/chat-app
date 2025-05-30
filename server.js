@@ -124,13 +124,23 @@ app.post('/send', (req, res) => {
     }
 
     // Emit only to that user's room, with explicit primitives
-    io.to(userKey).emit('chat message', {
+    io.to('admins').emit('chat message', {
       text:        messageData.text,
       sender:      messageData.sender,
       timestamp:   messageData.timestamp,
       imageBase64: messageData.imageBase64,
       userKey
     });
+    // ALSO broadcast to admin (and anyone else listening)
+    // io.emit('chat message', {
+    //   text:        messageData.text,
+    //   sender:      messageData.sender,
+    //   timestamp:   messageData.timestamp,
+    //   imageBase64: messageData.imageBase64,
+    //   userKey
+    // });
+
+
 
     res.status(200).send('Message sent successfully!');
   });

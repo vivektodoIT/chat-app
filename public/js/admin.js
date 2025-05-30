@@ -32,34 +32,51 @@ const sendBtn       = document.getElementById('sendBtn');
 let selectedUserKey = null;
 
 // ─── Load sidebar user list ───────────────────────────────────────────────────
+// ─── Load sidebar user list ───────────────────────────────────────────────────
 function loadUserList() {
-  db.ref('messages').once('value', snap => {
-    usersSidebar.innerHTML = '';
-    snap.forEach(child => {
-      const key   = child.key;           // e.g. "foo,bar@gmail,com"
-      const email = emailFromKey(key);   // → "foo.bar@gmail.com"
-      const btn   = document.createElement('button');
-      btn.className = 'user-btn';
-      btn.textContent = email;
-      btn.onclick = () => loadMessagesForUser(key);
-      usersSidebar.appendChild(btn);
+  return db.ref('messages')
+    .once('value')
+    .then(snap => {
+      usersSidebar.innerHTML = '';
+      let firstKey = null;
+
+      snap.forEach(child => {
+        const key   = child.key;           // e.g. "foo,bar@gmail,com"
+        const email = emailFromKey(key);   // → "foo.bar@gmail.com"
+        const btn   = document.createElement('button');
+        btn.className = 'user-btn';
+        btn.textContent = email;
+        btn.onclick = () => loadMessagesForUser(key);
+        usersSidebar.appendChild(btn);
+
+        if (!firstKey) firstKey = key;
+      });
+
+      return firstKey;
     });
-  });
 }
 
-// ─── Load messages for a single user ──────────────────────────────────────────
 function loadMessagesForUser(userKey) {
   selectedUserKey = userKey;
   messagesEl.innerHTML = '';            // clear
+
   db.ref(`messages/${userKey}`)
-    .once('value', snap => {
-      const list = [];
-      snap.forEach(c => list.push(c.val()));
+    .once('value')
+    .then(snapshot => {
+      // Pull the snapshot as a plain object, then turn into an array:
+      const data = snapshot.val() || {};
+      const list = Object.values(data);
+
       // sort by timestamp ascending
       list.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+
+      // render every message
       list.forEach(displayMessage);
-    });
+    })
+    .catch(console.error);
 }
+
+
 
 // ─── Render one message bubble ────────────────────────────────────────────────
 function displayMessage(msg) {
@@ -127,6 +144,7 @@ function handleSend() {
 // ─── Socket.io real-time hook ────────────────────────────────────────────────
 const socket = io();
 socket.on('connect', () => console.log('Admin socket connected'));
+socket.emit('join','admins');
 socket.on('chat message', data => {
   // Only show if it’s for the currently open user
   if (data.userKey === selectedUserKey) {
@@ -136,7 +154,10 @@ socket.on('chat message', data => {
 
 // ─── Wire up send & initial load ──────────────────────────────────────────────
 sendBtn.addEventListener('click', handleSend);
-loadUserList();
+loadUserList().then(firstKey => {
+  if (firstKey) loadMessagesForUser(firstKey);
+});
+
 
 
 
