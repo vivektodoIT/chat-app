@@ -25,8 +25,6 @@ function emailKey(email) {
 function emailFromKey(key) {
   return key.replace(/,/g, '.');
 }
-
-
 // Serve static files
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -124,6 +122,14 @@ app.post('/send', (req, res) => {
     }
 
     // Emit only to that user's room, with explicit primitives
+    io.to(userKey).emit('chat message', {
+      text:        messageData.text,
+      sender:      messageData.sender,
+      timestamp:   messageData.timestamp,
+      imageBase64: messageData.imageBase64,
+      userKey
+    });
+    // ALSO notify all admins in real time:
     io.to('admins').emit('chat message', {
       text:        messageData.text,
       sender:      messageData.sender,
@@ -131,17 +137,8 @@ app.post('/send', (req, res) => {
       imageBase64: messageData.imageBase64,
       userKey
     });
-    // ALSO broadcast to admin (and anyone else listening)
-    // io.emit('chat message', {
-    //   text:        messageData.text,
-    //   sender:      messageData.sender,
-    //   timestamp:   messageData.timestamp,
-    //   imageBase64: messageData.imageBase64,
-    //   userKey
-    // });
 
-
-
+    
     res.status(200).send('Message sent successfully!');
   });
 });
@@ -172,15 +169,6 @@ io.on('connection', socket => {
     };
 
     console.log(`📥 Admin → ${userKey}:`, messageData);
-
-    // Emit only to that user's room, with explicit primitives
-    io.to(userKey).emit('chat message', {
-      text:        messageData.text,
-      sender:      messageData.sender,
-      timestamp:   new Date().toISOString(),
-      imageBase64: messageData.imageBase64,
-      userKey
-    });
 
     // Save under that user's node
     db.ref(`messages/${userKey}`).push(messageData, error => {
