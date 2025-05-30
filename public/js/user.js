@@ -184,6 +184,13 @@ function cancelImage() {
 
 // wire up sendBtn for the case where userKey already existed
 sendBtn.addEventListener('click', sendMessage);
+// allow Enter key to send message
+msgInput.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+});
 
 
 

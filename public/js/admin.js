@@ -157,6 +157,13 @@ loadUserList().then(firstKey => {
 });
 
 
+// allow Enter key to send for admin
+messageInput.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    handleSend();
+  }
+});
 
 
 
