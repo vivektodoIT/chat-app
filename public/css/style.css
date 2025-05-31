@@ -218,6 +218,41 @@ img {
   margin-top: 5px;
   border-radius: 8px;
 }
+/* A small red dot to indicate “unread” next to a user button */
+.user-btn {
+  position: relative;
+  padding-right: 1.5em; /* leave room on the right for the dot */
+}
+.user-btn .unread-dot {
+  position: absolute;
+  top: 50%;
+  right: 0.5em;
+  transform: translateY(-50%);
+  width: 0.6em;
+  height: 0.6em;
+  background-color: #e63946; /* red color */
+  border-radius: 50%;
+  display: none; /* start hidden */
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -1,0 +1,106 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   USER.CSS: all styles used by user.html
+   ─────────────────────────────────────────────────────────────────────────────
+*/
+
+.user-page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: #fff;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  max-width: 450px;
+  margin: 0 auto;
+}
+
+/* Chat header */
+.user-page .chat-header {
+  background: #28a745;
+  color: #fff;
+  padding: 1rem;
+  text-align: center;
+  font-size: 1.3rem;
+  border-bottom: 1px solid #218838;
+}
+
+/* Chat messages */
+.user-page .chat-messages {
+  flex: 1;
+  padding: 1rem;
+  overflow-y: auto;
+  background: #f1f3f5;
+}
+
+/* Bubbles */
+.user-page .chat-messages .message {
+  margin-bottom: 0.8rem;
+  max-width: 80%;
+  line-height: 1.4;
+}
+
+.user-page .chat-messages .user-message {
+  background: #d4edda;
+  border-radius: 8px 8px 0 8px;
+  padding: 0.6rem 1rem;
+  margin-left: auto;
+}
+
+.user-page .chat-messages .admin-message {
+  background: #e9ecef;
+  border-radius: 8px 8px 8px 0;
+  padding: 0.6rem 1rem;
+  margin-right: auto;
+}
+
+/* Timestamp */
+.user-page .chat-messages .timestamp {
+  display: block;
+  font-size: 0.75rem;
+  color: #6c757d;
+  margin-top: 0.3rem;
+  text-align: right;
+}
+
+/* Chat input */
+.user-page .chat-input {
+  display: flex;
+  padding: 1rem;
+  border-top: 1px solid #dee2e6;
+  background: #fff;
+}
+
+.user-page .chat-input input[type="text"] {
+  flex: 1;
+  padding: 0.5rem 0.8rem;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  margin-right: 0.5rem;
+}
+
+.user-page .chat-input input[type="text"]:focus {
+  border-color: #28a745;
+}
+
+.user-page .chat-input button {
+  padding: 0.6rem 1.2rem;
+  background: #28a745;
+  border: none;
+  border-radius: 4px;
+  color: #fff;
+  cursor: pointer;
+}
+.user-page .chat-input button:hover {
+  background: #218838;
+}
+
+/* Image upload/cancel icons (if used) */
+.user-page .chat-input .upload-btn {
+  margin-right: 0.5rem;
+}
+.user-page .chat-input .cancel-image {
+  margin-left: 0.5rem;
+  cursor: pointer;
+  color: #dc3545;
+}
+
+/* …any other User‐specific rules… */

@@ -175,7 +175,7 @@ function handleImageSelect() {
     cancelBtn.style.display = 'inline-block';
   };
   reader.readAsDataURL(f);
-}
+} 
 function cancelImage() {
   selectedImageBase64 = '';
   fileInput.value = '';

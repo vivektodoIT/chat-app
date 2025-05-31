@@ -1,12 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta charset="UTF-8" />
+  <title>User Chat</title>
+  <!-- Link to user‐only styles -->
+  <link rel="stylesheet" href="/css/user.css" />
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/user.js" defer></script>
+</head>
+<body class="user-page">
+  <div class="chat-header">User Chat</div>
+  <ul class="chat-messages" id="messages"></ul>
+  <div class="chat-input">
+    <input type="file" id="imageInput" class="upload-btn" />
+    <span id="cancelImage" class="cancel-image" style="display:none;">✖</span>
+    <input type="text" id="message" placeholder="Type a message…" />
+    <button id="sendBtn">Send</button>
+  </div>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
   <meta charset="UTF-8">
   <title>User Chat</title>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
   <script src="/socket.io/socket.io.js"></script>
-  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/user.css">
 </head>
 <body>
   <div id="chat-container">
@@ -22,7 +56,7 @@
 
   <script src="/js/user.js"></script>
 </body>
-</html>
+</html> -->
 
 
 
