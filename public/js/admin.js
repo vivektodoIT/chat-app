@@ -1,4 +1,4 @@
-// ─── Helpers to sanitize email ↔ Firebase key ────────────────────────────────
+// ─── Helpers to sanitize email ↔ Firebase key ────────────────────────────────                 
 function emailFromKey(key) {
   return key.replace(/,/g, '.');
 }
@@ -44,7 +44,7 @@ function loadUserList() {
 
       if (!firstKey) {
         firstKey = key;
-      }
+      } 
     });
 
     return firstKey;  // may be null if no users exist yet
@@ -112,15 +112,16 @@ function handleSend() {
     };
 
     // 4a) Push to Firebase
-    db.ref(`messages/${selectedUserKey}`)
-      .push(msg)
-      .then(() => {
-        displayMessage(msg);  // show it immediately on the right
-      })
-      .catch(console.error);
+    // db.ref(`messages/${selectedUserKey}`)
+    //   .push(msg)
+    //   .then(() => {
+    //     displayMessage(msg);  // show it immediately on the right
+    //   })
+    //   .catch(console.error);
 
     // 4b) Emit over Socket.IO so the user side sees it in real time
     socket.emit('admin message', { ...msg, userKey: selectedUserKey });
+    displayMessage(msg);
   };
 
   if (file) {
@@ -167,7 +168,12 @@ loadUserList().then(firstKey => {
   if (firstKey) {
     loadMessagesForUser(firstKey);
   }
-});
+});                                                        
+
+
+
+
+
 
 
 

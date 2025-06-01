@@ -1,4 +1,4 @@
-require('dotenv').config();
+require('dotenv').config();                                          
 const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
@@ -13,6 +13,7 @@ admin.initializeApp({
   databaseURL: "https://chat-application-n-default-rtdb.asia-southeast1.firebasedatabase.app/"
 });
 
+const emailToSocketMap = {};
 const db = admin.database();
 const app = express();
 const server = http.createServer(app);
@@ -150,6 +151,10 @@ io.on('connection', socket => {
   // Client tells us which userId room to join
   socket.on('join', userKey => {
     socket.join(userKey);
+    if(userKey !== 'admins') {
+      // Map userKey to socket ID for admin notifications
+      emailToSocketMap[userKey] = socket.id;
+    }
     console.log(`🔑 Socket ${socket.id} joined room ${userKey}`);
   });
 
@@ -177,10 +182,18 @@ io.on('connection', socket => {
       } else {
         console.log(`Saved admin message to messages/${userKey}`);
       }
-    });
+    }) .then(() => socket.to(userSocketId).emit('chat message', messageData))
+       .catch(console.error);
   });
 
   socket.on('disconnect', () => {
+    const email = emailToSocketMap[socket.id];
+
+    if(email) {
+      // Map userKey to socket ID for admin notifications
+      delete emailToSocketMap[email];
+    }
+
     console.log('🚪 Socket disconnected:', socket.id);
   });
 });
@@ -192,7 +205,7 @@ app.get('*', (req, res) => {
 
 // Start server
 const PORT = process.env.PORT || 3002;
-server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+server.listen(PORT, () => console.log(`Server running on port ${PORT}`));              
 
 
 

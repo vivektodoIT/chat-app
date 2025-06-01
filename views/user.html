@@ -9,13 +9,20 @@
   <script src="/js/user.js" defer></script>
 </head>
 <body class="user-page">
+  <div class="floating-chat-box user-page">
+
   <div class="chat-header">User Chat</div>
   <ul class="chat-messages" id="messages"></ul>
-  <div class="chat-input">
-    <input type="file" id="imageInput" class="upload-btn" />
+    <div class="chat-input">
+      <label for="imageInput" class="upload-icon">
+    <img src="/images/attachment2.png" alt="Upload" />
+    </label>
+    <input type="file" id="imageInput" accept="image/*" class="upload-btn" />
     <span id="cancelImage" class="cancel-image" style="display:none;">✖</span>
     <input type="text" id="message" placeholder="Type a message…" />
-    <button id="sendBtn">Send</button>
+    <button id="sendBtn">
+      <img src="/images/send.png" alt="Send" class="send-icon" />
+    </button>
   </div>
 </body>
 </html>

@@ -2,42 +2,27 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin Chat</title>
-
-  <!-- ✅ Firebase SDK (add this before admin.js) -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-
-  <!-- Link to admin.css (must match this path exactly) -->
   <link rel="stylesheet" href="/css/admin.css" />
-
-  <!-- Socket.IO client + your admin.js (defer ensures DOM is ready) -->
   <script src="/socket.io/socket.io.js"></script>
   <script src="/js/admin.js" defer></script>
 </head>
-
 <body class="admin-page">
-  <!-- ─── Sidebar: all user‐buttons go here ─── -->
-  <div id="usersList" class="sidebar">
-    <!-- admin.js will inject <button class="user-btn">userEmail@example.com</button> here -->
-  </div>
+  <div id="usersList" class="sidebar"></div>
 
-  <!-- ─── Main panel: chat header, messages, and input ─── -->
   <div class="main-panel">
     <div class="chat-header">Admin Chat</div>
-    <div class="chat-messages" id="messages"></div>
+
+    <div class="chat-body-wrapper">
+      <div id="messages" class="chat-messages"></div>
+    </div>
 
     <div class="chat-input">
-      <!-- optional image‐upload button -->
       <input id="imageInput" type="file" accept="image/*" class="upload-btn" />
       <span id="cancelImage" class="cancel-image" style="display:none;">✖</span>
-
-      <input
-        id="messageInput"
-        type="text"
-        placeholder="Type a message…"
-      />
+      <input id="messageInput" type="text" placeholder="Type a message…" />
       <button id="sendBtn">Send</button>
     </div>
   </div>
@@ -58,38 +43,46 @@
 
 
 
+<!-- admin.html -->
 <!-- <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Chat</title>
-  <link rel="stylesheet" href="/css/admin.css?v=9999">
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+  <link rel="stylesheet" href="/css/admin.css">
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/admin.js" defer></script>
 </head>
-<body>
-    <div class="wrapper">   
-  <div id="usersList">
-    <h3>Users</h3>
-    <div id="userButtons"></div>
+<body class="admin-page">
+  <div id="usersList" class="sidebar">
+
   </div>
-
-  <div class="chat-container">
+  <div class="main-panel">
     <div class="chat-header">Admin Chat</div>
-    <div id="messages"></div>
+    <div class="chat-messages" id="messages"></div>
 
-    <div class="input-area">
-      <input id="imageInput" type="file" accept="image/*" />
-      <input id="messageInput" type="text" placeholder="Type a message..." />
+    <div class="chat-input">
+      <input id="imageInput" type="file" accept="image/*" class="upload-btn" />
+      <span id="cancelImage" class="cancel-image" style="display:none;">✖</span>
+
+      <input
+        id="messageInput"
+        type="text"
+        placeholder="Type a message…"
+      />
       <button id="sendBtn">Send</button>
     </div>
   </div>
-
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-  <script src="/socket.io/socket.io.js"></script>
-  <script src="/js/admin.js"></script>
 </body>
 </html> -->
+
+
+
 
 
 

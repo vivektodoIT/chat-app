@@ -1,4 +1,4 @@
-// public/js/user.js
+// public/js/user.js                                                       
 
 // ─────────────────────────────────────────────────────────────────────────────
 // DOM refs
@@ -97,15 +97,27 @@ async function fetchAndRenderMessages() {
 
 // ─────────────────────────────────────────────────────────────────────────────
 // 6️⃣ Render a single bubble (works for both admin & user)
-function renderMessage(msg) {
-  const div = document.createElement('div');
-  div.className = 'message ' + (msg.sender === 'user'
-    ? 'user-message'
-    : 'admin-message');
+let lastRenderedDate = null;  // track last date printed
 
+function renderMessage(msg) {
+  const messageDate = new Date(msg.timestamp).toDateString(); // e.g., "Mon Jun 03 2025"
+
+  // ⏱️ Print a date header only once per day
+  if (lastRenderedDate !== messageDate) {
+    lastRenderedDate = messageDate;
+
+    const dateDiv = document.createElement("div");
+    dateDiv.className = "chat-date-header";
+    dateDiv.textContent = formatFullDate(msg.timestamp); // "Monday, 3 June 2025"
+    messagesEl.appendChild(dateDiv);
+  }
+
+  // Render chat bubble
+  const div = document.createElement('div');
+  div.className = 'message ' + (msg.sender === 'user' ? 'user-message' : 'admin-message');
   div.innerHTML = `
     <div class="bubble">
-      ${msg.text        ? `<p>${msg.text}</p>` : ''}
+      ${msg.text ? `<p>${msg.text}</p>` : ''}
       ${msg.imageBase64 ? `<img src="${msg.imageBase64}" />` : ''}
       <div class="timestamp">${new Date(msg.timestamp).toLocaleTimeString([], {
         hour: '2-digit', minute: '2-digit'
@@ -114,6 +126,13 @@ function renderMessage(msg) {
   `;
   messagesEl.appendChild(div);
 }
+
+function formatFullDate(ts) {
+  const dateObj = new Date(ts);
+  const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+  return dateObj.toLocaleDateString(undefined, options);
+}
+
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Utility: keep scroll at bottom
@@ -190,7 +209,7 @@ msgInput.addEventListener('keydown', function(e) {
     e.preventDefault();
     sendMessage();
   }
-});
+});                                                                      
 
 
 

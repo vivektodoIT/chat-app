@@ -1,115 +1,99 @@
-/* ─── Entirely “Admin”‐specific styling ─── */
-.admin-page {
+/* admin.css */
+/* .admin-page {
   display: grid;
-  grid-template-columns: 200px 1fr;
-  gap: 1rem;
+  grid-template-columns: 220px 1fr;
   height: 100vh;
-  margin: 0;
-  background: #f5f6fa;
-  font-family: Arial, sans-serif;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* ─── Sidebar (left) ─── */
-.admin-page .sidebar {
-  background: #343a40;
-  color: #fff;
-  overflow-y: auto;
+.sidebar {
+  background-color: #343a40;
+  color: white;
   padding: 1rem;
+  overflow-y: auto;
 }
 
-/* Buttons inside the sidebar */
-.admin-page .sidebar .user-btn {
+.sidebar h2 {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+}
+
+.user-btn {
   display: block;
   width: 100%;
-  margin-bottom: 0.5rem;
   padding: 0.5rem 1rem;
-  background: #495057;
+  margin-bottom: 0.5rem;
+  background-color: #495057;
   border: none;
   border-radius: 4px;
-  color: #fff;
+  color: white;
   text-align: left;
   cursor: pointer;
-  position: relative;
+  transition: background-color 0.2s;
 }
 
-/* If you want to show a little “unread” dot on a user‐button, you can put:
-   <span class="unread-dot"></span> inside the button—but hidden by default: */
-.admin-page .sidebar .user-btn .unread-dot {
-  position: absolute;
-  top: 50%;
-  right: 0.8rem;
-  transform: translateY(-50%);
-  width: 0.5rem;
-  height: 0.5rem;
-  background-color: #e63946;
-  border-radius: 50%;
-  display: none; /* we can show this later via JS */
+.user-btn:hover {
+  background-color: #6c757d;
 }
 
-/* ─── Main chat panel (right side) ─── */
-.admin-page .main-panel {
+.main-panel {
   display: flex;
   flex-direction: column;
-  background: #fff;
+  background-color: #f1f3f5;
 }
 
-/* Chat header bar */
-.admin-page .chat-header {
-  background: #007bff;
-  color: #fff;
+.chat-header {
+  background-color: #007bff;
+  color: white;
   padding: 1rem;
-  font-size: 1.2rem;
+  font-size: 1.25rem;
+  font-weight: bold;
 }
 
-/* Chat messages container */
-.admin-page .chat-messages {
-  flex: 1;              /* Take all vertical space between header + input */
+.chat-messages {
+  flex: 1;
   padding: 1rem;
-  background: #e9ecef;
   overflow-y: auto;
+  background: #e9ecef;
 }
 
-/* Each message bubble wrapper */
-.admin-page .chat-messages .message {
-  margin-bottom: 0.75rem;
+.message {
   max-width: 60%;
-  line-height: 1.4;
-}
-
-/* User (from site visitor) */
-.admin-page .chat-messages .user-message {
-  background: #e2e2e2;
-  border-radius: 8px 8px 8px 0;
+  margin-bottom: 1rem;
   padding: 0.5rem 1rem;
-  margin-right: auto; /* align on left */
+  border-radius: 10px;
+  font-size: 0.9rem;
+  word-wrap: break-word;
 }
 
-/* Admin (you) */
-.admin-page .chat-messages .admin-message {
-  background: #d1e7dd;
-  border-radius: 8px 8px 0 8px;
-  padding: 0.5rem 1rem;
-  margin-left: auto;  /* align on right */
+.admin-message {
+  background-color: #d1e7dd;
+  margin-left: auto;
+  border-radius: 10px 0 10px 10px;
 }
 
-/* Timestamp styling */
-.admin-page .chat-messages .timestamp {
-  display: block;
-  font-size: 0.7rem;
-  color: #6c757d;
-  margin-top: 0.3rem;
+.user-message {
+  background-color: #f8d7da;
+  margin-right: auto;
+  border-radius: 0 10px 10px 10px;
+}
+
+.timestamp {
   text-align: right;
+  font-size: 0.75rem;
+  color: #6c757d;
+  margin-top: 0.25rem;
 }
 
-/* ─── Chat input bar (bottom) ─── */
-.admin-page .chat-input {
+.chat-input {
   display: flex;
+  align-items: center;
   padding: 1rem;
-  background: #f8f9fa;
-  border-top: 1px solid #dee2e6;
+  background: #dee2e6;
+  border-top: 1px solid #ced4da;
 }
 
-.admin-page .chat-input input[type="text"] {
+.chat-input input[type="text"] {
   flex: 1;
   padding: 0.5rem 1rem;
   border: 1px solid #ced4da;
@@ -117,26 +101,159 @@
   margin-right: 0.5rem;
 }
 
-.admin-page .chat-input button {
+.chat-input button {
+  padding: 0.5rem 1.2rem;
+  background-color: #007bff;
+  border: none;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.chat-input button:hover {
+  background-color: #0056b3;
+}
+
+.upload-btn {
+  margin-right: 0.5rem;
+}
+
+.cancel-image {
+  cursor: pointer;
+  color: #dc3545;
+  font-size: 1.2rem;
+  margin-right: 0.5rem;
+} */
+
+
+
+
+.admin-page {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  height: 100vh;
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+/* Sidebar */
+.sidebar {
+  background-color: #2c3e50;
+  color: #fff;
+  padding: 1rem;
+  overflow-y: auto;
+}
+.sidebar .user-btn {
+  background-color: #34495e;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+}
+.sidebar .user-btn:hover {
+  background-color: #3c5a73;
+}
+
+/* Main Chat Panel */
+.main-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: #f1f3f6;
+}
+
+/* Header */
+.chat-header {
+  background-color: #007bff;
+  color: #fff;
+  padding: 1rem;
+  font-size: 1.2rem;
+}
+
+/* Scrollable message area */
+.chat-body-wrapper {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+}
+
+/* Messages */
+.chat-messages .message {
+  margin-bottom: 0.75rem;
+  max-width: 70%;
+  padding: 0.5rem 1rem;
+  border-radius: 10px;
+}
+.chat-messages .user-message {
+  background-color: #e0f7fa;
+  margin-right: auto;
+}
+.chat-messages .admin-message {
+  background-color: #d1e7dd;
+  margin-left: auto;
+}
+.chat-messages .timestamp {
+  font-size: 0.7rem;
+  color: #555;
+  text-align: right;
+  margin-top: 4px;
+}
+
+/* Chat Input */
+.chat-input {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  background-color: #fff;
+  border-top: 1px solid #ccc;
+}
+.chat-input .upload-btn {
+  margin-right: 0.5rem;
+}
+.chat-input input[type="text"] {
+  flex: 1;
+  padding: 0.5rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+.chat-input button {
+  margin-left: 0.5rem;
   padding: 0.6rem 1.2rem;
-  background: #007bff;
+  background-color: #007bff;
   border: none;
   border-radius: 4px;
   color: #fff;
   cursor: pointer;
 }
-.admin-page .chat-input button:hover {
-  background: #0069d9;
+.chat-input button:hover {
+  background-color: #0069d9;
 }
-
-/* If you do use an upload button + cancel icon */
-.admin-page .chat-input .upload-btn {
-  margin-right: 0.5rem;
-}
-.admin-page .chat-input .cancel-image {
+.cancel-image {
+  color: red;
   margin-left: 0.5rem;
   cursor: pointer;
-  color: #dc3545;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
