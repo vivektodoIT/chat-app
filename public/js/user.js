@@ -8,6 +8,17 @@ const sendBtn    = document.getElementById('sendBtn');
 const fileInput  = document.getElementById('imageInput');
 const cancelBtn  = document.getElementById('cancelImage');
 
+// Show/hide Send button when typing
+msgInput.addEventListener('input', () => {
+  const hasText = msgInput.value.trim().length > 0;
+  if (hasText) {
+    sendBtn.classList.add('show');
+  } else {
+    sendBtn.classList.remove('show');
+  }
+});
+
+
 let userKey = localStorage.getItem('userKey');
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -100,32 +111,46 @@ async function fetchAndRenderMessages() {
 let lastRenderedDate = null;  // track last date printed
 
 function renderMessage(msg) {
-  const messageDate = new Date(msg.timestamp).toDateString(); // e.g., "Mon Jun 03 2025"
-
-  // ⏱️ Print a date header only once per day
+  const messageDate = new Date(msg.timestamp).toDateString();
   if (lastRenderedDate !== messageDate) {
     lastRenderedDate = messageDate;
-
     const dateDiv = document.createElement("div");
     dateDiv.className = "chat-date-header";
-    dateDiv.textContent = formatFullDate(msg.timestamp); // "Monday, 3 June 2025"
+    dateDiv.textContent = formatFullDate(msg.timestamp);
     messagesEl.appendChild(dateDiv);
   }
 
-  // Render chat bubble
-  const div = document.createElement('div');
-  div.className = 'message ' + (msg.sender === 'user' ? 'user-message' : 'admin-message');
-  div.innerHTML = `
+  const wrapper = document.createElement("div");
+  wrapper.className = "message-wrapper " + (msg.sender === "admin" ? "admin-wrapper" : "user-wrapper");
+
+  const bubble = document.createElement("div");
+  bubble.className = "message " + (msg.sender === "admin" ? "admin-message" : "user-message");
+
+  bubble.innerHTML = `
     <div class="bubble">
-      ${msg.text ? `<p>${msg.text}</p>` : ''}
-      ${msg.imageBase64 ? `<img src="${msg.imageBase64}" />` : ''}
+      ${msg.text ? `<p>${msg.text}</p>` : ""}
+      ${msg.imageBase64 ? `<img src="${msg.imageBase64}" />` : ""}
       <div class="timestamp">${new Date(msg.timestamp).toLocaleTimeString([], {
-        hour: '2-digit', minute: '2-digit'
+        hour: "2-digit",
+        minute: "2-digit"
       })}</div>
     </div>
   `;
-  messagesEl.appendChild(div);
+
+  if (msg.sender === "admin") {
+    const avatar = document.createElement("img");
+    avatar.src = "/images/admin-avatar.png"; // Replace with your actual path
+    avatar.alt = "Admin";
+    avatar.className = "avatar";
+    wrapper.appendChild(avatar);
+  }
+
+  wrapper.appendChild(bubble);
+  messagesEl.appendChild(wrapper);
 }
+
+
+
 
 function formatFullDate(ts) {
   const dateObj = new Date(ts);
