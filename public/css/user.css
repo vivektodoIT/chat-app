@@ -247,7 +247,7 @@
 }
 /* Custom hover tooltip */
 .message[data-hover]::after {
-   content: attr(data-hover);
+  content: attr(data-hover);
   position: absolute;
   background: rgba(255, 255, 255, 0.85);
   color: #000000;
@@ -262,6 +262,7 @@
   bottom: 100%;
   left: 0; /* default for left-aligned messages */
   transform: translateY(-6px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
 }
 
 /* Show tooltip on hover */
