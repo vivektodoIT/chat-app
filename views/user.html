@@ -1,7 +1,47 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Chat</title>
+  
+  <link rel="stylesheet" href="/css/user.css" />
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/user.js" defer></script>
+</head>
+<body class="user-page">
+  <div class="floating-chat-box user-page">
+
+  <div class="chat-header">User Chat</div>
+  <ul class="chat-messages" id="messages"></ul>
+    <div class="chat-input">
+      <label for="imageInput" class="upload-icon">
+    <img src="/images/attachment2.png" alt="Upload" />
+    </label>
+    <input type="file" id="imageInput" accept="image/*" class="upload-btn" />
+    <span id="cancelImage" class="cancel-image" style="display:none;">✖</span>
+    <input type="text" id="message" placeholder="Type a message…" />
+    <button id="sendBtn">
+      <img src="/images/send.png" alt="Send" class="send-icon" />
+    </button>
+  </div>
+</body>
+</html> -->
+
+
+
+
+
+ 
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>User Chat</title>
   <!-- Link to user‐only styles -->
   <link rel="stylesheet" href="/css/user.css" />
@@ -26,92 +66,3 @@
   </div>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>User Chat</title>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-  <script src="/socket.io/socket.io.js"></script>
-  <link rel="stylesheet" href="/css/user.css">
-</head>
-<body>
-  <div id="chat-container">
-    <h2>User Chat</h2>
-    <ul id="messages" style="height:350px; overflow-y:auto;"></ul>
-    <div id="input-area">
-      <input id="imageInput" type="file" accept="image/*">
-      <button id="cancelImage" style="display:none;">Cancel</button>
-      <input id="message" type="text" placeholder="Type a message…">
-      <button id="sendBtn">Send</button>
-    </div>
-  </div>
-
-  <script src="/js/user.js"></script>
-</body>
-</html> -->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                                                                                  <!-- first -->
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>User Chat</title>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-  <script src="/socket.io/socket.io.js"></script>
-  <link rel="stylesheet" href="/css/style.css">
-</head>
-<body>
-  <div id="chat-container">
-    <h2>User Chat</h2>
-    <ul id="messages" style="height:350px; overflow-y:auto;"></ul>
-    <div id="input-area">
-      <input id="imageInput" type="file" accept="image/*" onchange="handleImageSelect()">
-      <button id="cancelImage" onclick="cancelImage()" style="display:none;">Cancel</button>
-      <input id="message" type="text" placeholder="Type a message…">
-      // note the id here 
-      <button id="sendBtn">Send</button>
-    </div>
-  </div>
-
-  <script src="/js/user.js"></script>
-</body>
-</html> -->
-
-

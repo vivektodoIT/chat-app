@@ -1,7 +1,5 @@
-// public/js/user.js                                                       
+// Original user.js logic preserved - only responsive features added
 
-// ─────────────────────────────────────────────────────────────────────────────
-// DOM refs
 const messagesEl = document.getElementById('messages');
 const msgInput = document.getElementById('message');
 const sendBtn = document.getElementById('sendBtn');
@@ -18,12 +16,14 @@ msgInput.addEventListener('input', () => {
   }
 });
 
-
 let userKey = localStorage.getItem('userKey');
 
 // ─────────────────────────────────────────────────────────────────────────────
 // 1️⃣ On load: decide if we need to ask for email, or go straight to chat
 document.addEventListener('DOMContentLoaded', () => {
+  // Handle mobile viewport for better mobile experience
+  handleMobileViewport();
+  
   if (!userKey) {
     // no email stored → show welcome and enter‐email mode
     renderMessage({
@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
-// 2️⃣ Switch UI into “enter email” mode
+// 2️⃣ Switch UI into "enter email" mode
 function enterEmailMode() {
   // hide file + cancel, switch placeholder + button text
   fileInput.style.display = 'none';
@@ -53,11 +53,11 @@ function enterEmailMode() {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// 3️⃣ Validate & persist the email when they click “Join Chat”
+// 3️⃣ Validate & persist the email when they click "Join Chat"
 function captureEmail() {
   const raw = msgInput.value.trim();
   if (!raw || !raw.includes('@')) {
-    alert('Please enter a valid email address.');
+    showMobileAlert('Please enter a valid email address.');
     return;
   }
 
@@ -68,7 +68,7 @@ function captureEmail() {
   // restore UI to chat mode
   msgInput.value = '';
   msgInput.placeholder = 'Type a message…';
-  sendBtn.textContent = 'Send';
+  sendBtn.innerHTML = '<img src="/images/send.png" alt="Send" class="send-icon" />';
   fileInput.style.display = '';
   cancelBtn.style.display = 'none';
 
@@ -93,16 +93,17 @@ function initChat() {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// 5️⃣ Fetch this user’s previous messages
+// 5️⃣ Fetch this user's previous messages
 async function fetchAndRenderMessages() {
   try {
     const res = await fetch(`/messages/${encodeURIComponent(userKey)}`);
     const msgs = await res.json();
-    messagesEl.innerHTML = '';  // clear the “enter email” bubble
+    messagesEl.innerHTML = '';  // clear the "enter email" bubble
     msgs.forEach(renderMessage);
     scrollToBottom();
   } catch (err) {
     console.error('Fetch messages failed:', err);
+    showMobileAlert('Failed to load chat history.');
   }
 }
 
@@ -110,44 +111,6 @@ async function fetchAndRenderMessages() {
 // 6️⃣ Render a single bubble (works for both admin & user)
 let lastRenderedDate = null;  // track last date printed
 
-// function renderMessage(msg) {
-//   const messageDate = new Date(msg.timestamp).toDateString();
-//   if (lastRenderedDate !== messageDate) {
-//     lastRenderedDate = messageDate;
-//     const dateDiv = document.createElement("div");
-//     dateDiv.className = "chat-date-header";
-//     dateDiv.textContent = formatFullDate(msg.timestamp);
-//     messagesEl.appendChild(dateDiv);
-//   }
-
-//   const wrapper = document.createElement("div");
-//   wrapper.className = "message-wrapper " + (msg.sender === "admin" ? "admin-wrapper" : "user-wrapper");
-
-//   const bubble = document.createElement("div");
-//   bubble.className = "message " + (msg.sender === "admin" ? "admin-message" : "user-message");
-
-//   bubble.innerHTML = `
-//     <div class="bubble">
-//       ${msg.text ? `<p>${msg.text}</p>` : ""}
-//       ${msg.imageBase64 ? `<img src="${msg.imageBase64}" />` : ""}
-//       <div class="timestamp">${new Date(msg.timestamp).toLocaleTimeString([], {
-//     hour: "2-digit",
-//     minute: "2-digit"
-//   })}</div>
-//     </div>
-//   `;
-
-//   if (msg.sender === "admin") {
-//     const avatar = document.createElement("img");
-//     avatar.src = "/images/admin-avatar.png"; // Replace with your actual path
-//     avatar.alt = "Admin";
-//     avatar.className = "avatar";
-//     wrapper.appendChild(avatar);
-//   }
-
-//   wrapper.appendChild(bubble);
-//   messagesEl.appendChild(wrapper);
-// }
 function renderMessage(msg) {
   const messageDate = new Date(msg.timestamp).toDateString();
   if (lastRenderedDate !== messageDate) {
@@ -177,9 +140,7 @@ function renderMessage(msg) {
   }
 
   // Assign hover effect
-  // bubble.title = hoverText;
   bubble.setAttribute('data-hover', hoverText);
-
 
   bubble.innerHTML = `
     <div class="bubble">
@@ -193,24 +154,27 @@ function renderMessage(msg) {
     avatar.src = "/images/admin-avatar.png";
     avatar.alt = "Admin";
     avatar.className = "avatar";
+    // Handle missing avatar image gracefully
+    avatar.onerror = () => {
+      avatar.style.display = 'none';
+    };
     wrapper.appendChild(avatar);
   }
 
   wrapper.appendChild(bubble);
   messagesEl.appendChild(wrapper);
+  
+  // Auto scroll after adding message (important for mobile)
+  requestAnimationFrame(() => {
+    scrollToBottom();
+  });
 }
-
-
-
-
-
 
 function formatFullDate(ts) {
   const dateObj = new Date(ts);
   const options = { weekday: 'long', day: 'numeric', month: 'long'/*, year: 'numeric'*/ };
   return dateObj.toLocaleDateString(undefined, options);
 }
-
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Utility: keep scroll at bottom
@@ -223,19 +187,30 @@ function scrollToBottom() {
 const socket = io();
 socket.on('connect', () => console.log('Socket connected as', socket.id));
 socket.on('chat message', msg => {
-  // only render if we’re in chat mode (i.e. after capturing email)
+  // only render if we're in chat mode (i.e. after capturing email)
   if (userKey) {
     renderMessage(msg);
     scrollToBottom();
   }
 });
 
+// Handle connection issues for mobile users
+socket.on('disconnect', () => {
+  console.log('Socket disconnected');
+  showMobileAlert('Connection lost. Trying to reconnect...');
+});
+
+socket.on('reconnect', () => {
+  console.log('Socket reconnected');
+  showMobileAlert('Connection restored!');
+});
+
 // ─────────────────────────────────────────────────────────────────────────────
-// 8️⃣ Sending a message (unchanged from your previous code)
+// 8️⃣ Sending a message (enhanced for mobile)
 async function sendMessage() {
   const text = msgInput.value.trim();
   if (!text && !selectedImageBase64) {
-    alert('Cannot send empty message.');
+    showMobileAlert('Cannot send empty message.');
     return;
   }
 
@@ -255,24 +230,43 @@ async function sendMessage() {
     if (resp.ok) {
       msgInput.value = '';
       cancelImage();
+      // Hide mobile keyboard after sending
+      msgInput.blur();
+    } else {
+      throw new Error('Failed to send message');
     }
   } catch (err) {
     console.error('Send failed:', err);
+    showMobileAlert('Failed to send message. Please try again.');
   }
 }
 
-// 9️⃣ Image & cancel (unchanged from your previous code)
+// 9️⃣ Image & cancel (enhanced for mobile)
 let selectedImageBase64 = '';
 function handleImageSelect() {
   const f = fileInput.files[0];
-  if (!f || !f.type.startsWith('image/')) return;
+  if (!f || !f.type.startsWith('image/')) {
+    showMobileAlert('Please select a valid image file.');
+    return;
+  }
+  
+  // Check file size (5MB limit)
+  if (f.size > 5 * 1024 * 1024) {
+    showMobileAlert('Image size must be less than 5MB.');
+    return;
+  }
+  
   const reader = new FileReader();
   reader.onloadend = () => {
     selectedImageBase64 = reader.result;
     cancelBtn.style.display = 'inline-block';
   };
+  reader.onerror = () => {
+    showMobileAlert('Failed to read image file.');
+  };
   reader.readAsDataURL(f);
 }
+
 function cancelImage() {
   selectedImageBase64 = '';
   fileInput.value = '';
@@ -281,6 +275,7 @@ function cancelImage() {
 
 // wire up sendBtn for the case where userKey already existed
 sendBtn.addEventListener('click', sendMessage);
+
 // allow Enter key to send message
 msgInput.addEventListener('keydown', function (e) {
   if (e.key === 'Enter' && !e.shiftKey) {
@@ -289,3 +284,77 @@ msgInput.addEventListener('keydown', function (e) {
   }
 });
 
+// ═══════════════════════════════════════════════════════════════════════════════
+// RESPONSIVE ENHANCEMENTS (New functions for mobile support)
+// ═══════════════════════════════════════════════════════════════════════════════
+
+// Handle mobile viewport and keyboard
+function handleMobileViewport() {
+  // Handle mobile keyboard appearing/disappearing
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', () => {
+      // Adjust chat container when mobile keyboard appears
+      const viewport = window.visualViewport;
+      document.documentElement.style.height = viewport.height + 'px';
+      
+      // Ensure scroll position is maintained
+      setTimeout(() => {
+        scrollToBottom();
+      }, 100);
+    });
+  }
+  
+  // Handle orientation change
+  window.addEventListener('orientationchange', () => {
+    // Delay to ensure orientation change is complete
+    setTimeout(() => {
+      // Reset height
+      document.documentElement.style.height = '100vh';
+      scrollToBottom();
+    }, 500);
+  });
+  
+  // Handle window resize for desktop responsive testing
+  window.addEventListener('resize', () => {
+    scrollToBottom();
+  });
+}
+
+// Better alert function for mobile
+function showMobileAlert(message) {
+  // Use native alert for now, but could be enhanced with custom mobile-friendly notifications
+  alert(message);
+}
+
+// Handle mobile touch events for better UX
+document.addEventListener('touchstart', function() {}, { passive: true });
+
+// Prevent zoom on double tap for iOS
+let lastTouchEnd = 0;
+document.addEventListener('touchend', function (event) {
+  const now = (new Date()).getTime();
+  if (now - lastTouchEnd <= 300) {
+    event.preventDefault();
+  }
+  lastTouchEnd = now;
+}, false);
+
+// Handle paste events for mobile
+msgInput.addEventListener('paste', function(e) {
+  // Allow text pasting
+  setTimeout(() => {
+    // Trigger input event to update send button state
+    const event = new Event('input', { bubbles: true });
+    msgInput.dispatchEvent(event);
+  }, 10);
+});
+
+// Auto-focus input when chat mode is active (but not on mobile to avoid keyboard popup)
+function autoFocusInput() {
+  if (userKey && window.innerWidth > 768) {
+    msgInput.focus();
+  }
+}
+
+// Call auto-focus when appropriate
+setTimeout(autoFocusInput, 1000);

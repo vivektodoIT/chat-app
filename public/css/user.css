@@ -1,7 +1,4 @@
-/* ─────────────────────────────────────────────────────────────────────────────
-   USER.CSS: all styles used by user.html
-   ─────────────────────────────────────────────────────────────────────────────
-*/
+/* Original design preserved - only responsiveness added */
 
 .user-page {
     display: flex;
@@ -206,20 +203,6 @@
     pointer-events: auto;
 }
 
-/* .admin-avatar-wrapper {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.5rem;
-  margin-bottom : 0.8rem;
-}
-
-.admin-avatar {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  object-fit: cover;
-  margin-top: 4px;
-} */
 
 .message-wrapper {
     display: flex;
@@ -279,7 +262,113 @@
   position: relative; /* Needed for absolute positioning of tooltip */
 }
 
+/* ===== RESPONSIVE ADDITIONS ONLY ===== */
 
-
-
-/* …any other User‐specific rules… */
+/* Mobile devices (phones) */
+@media (max-width: 768px) {
+    .user-page {
+        max-width: 100%;
+        margin: 0;
+    }
+        .floating-chat-box {
+        position: static;
+        width: 100%;
+        height: 100vh;
+        bottom: auto;
+        right: auto;
+        border-radius: 0;
+        box-shadow: none;
+        border: none;
+    }
+    
+    /* Adjust message bubbles for smaller screens */
+    .user-page .chat-messages .message {
+        max-width: 70%;
+    }
+    
+    /* Make touch targets larger on mobile */
+    .user-page .chat-input button,
+    .upload-icon {
+        min-width: 44px;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    /* Adjust input for mobile keyboards */
+    .user-page .chat-input input[type="text"] {
+        font-size: 16px; /* Prevents zoom on iOS */
+    }
+}
+/* Small mobile devices */
+@media (max-width: 480px) {
+    /* Reduce padding on very small screens */
+    .user-page .chat-messages {
+        padding: 0.75rem;
+    }
+    
+    .user-page .chat-input {
+        padding: 0.75rem;
+    }
+    
+    .user-page .chat-header {
+        padding: 0.75rem;
+        font-size: 1.2rem;
+    }
+    
+    /* Increase message bubble width for tiny screens */
+    .user-page .chat-messages .message {
+        max-width: 80%;
+    }
+}
+/* Landscape orientation on phones */
+@media (max-height: 500px) and (orientation: landscape) {
+    .user-page .chat-header {
+        padding: 0.5rem 1rem;
+        font-size: 1.1rem;
+    }
+    
+    .user-page .chat-messages {
+        padding: 0.5rem 1rem;
+    }
+    
+    .user-page .chat-input {
+        padding: 0.5rem 1rem;
+    }
+}
+/* Tablets */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .user-page {
+        max-width: 500px;
+    }
+    
+    .floating-chat-box {
+        width: 400px;
+        height: 600px;
+    }
+}
+/* Touch device improvements */
+@media (hover: none) and (pointer: coarse) {
+    /* Remove hover effects on touch devices */
+    .user-page .chat-input button:hover {
+        background: none;
+    }
+    
+    /* Make all interactive elements larger for touch */
+    .upload-icon,
+    .cancel-image,
+    .user-page .chat-input button {
+        min-width: 44px;
+        min-height: 44px;
+        padding: 8px;
+    }
+}
+/* High DPI displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .upload-icon img,
+    .user-page .chat-input button .send-icon {
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: crisp-edges;
+    }
+}
